@@ -1,0 +1,256 @@
+<!DOCTYPE html><html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SofiqTech Eid Ultimate</title><link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet"><style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Hind Siliguri',sans-serif;}
+
+body{
+height:100vh;
+color:gold;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+}
+
+/* Video Background */
+video{
+position:absolute;
+width:100%;
+height:100%;
+object-fit:cover;
+z-index:-2;
+filter:brightness(0.4);
+}
+
+/* Overlay Glow */
+.overlay{
+position:absolute;
+width:100%;
+height:100%;
+background:radial-gradient(circle,rgba(0,0,0,0.3),#000);
+z-index:-1;
+}
+
+/* Glass UI */
+.container{
+width:90%;
+max-width:400px;
+padding:25px;
+border-radius:20px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+border:1px solid rgba(255,215,0,0.3);
+text-align:center;
+box-shadow:0 0 30px rgba(255,215,0,0.25);
+animation:fade 1s ease;
+}
+
+.hidden{display:none;}
+
+@keyframes fade{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;}
+}
+
+/* Input */
+input{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:none;
+margin-top:15px;
+}
+
+/* Button */
+button{
+margin-top:15px;
+padding:12px;
+border:none;
+border-radius:10px;
+background:linear-gradient(45deg,gold,#ffd700);
+color:black;
+font-weight:bold;
+cursor:pointer;
+}
+
+/* Gift */
+.gift{
+font-size:55px;
+animation:pulse 1.5s infinite;
+}
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.2);}
+100%{transform:scale(1);}
+}
+
+/* Lantern */
+.lantern{
+font-size:50px;
+animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+from{text-shadow:0 0 10px gold;}
+to{text-shadow:0 0 30px gold;}
+}
+
+/* Poem */
+.poem span{
+display:block;
+opacity:0;
+transform:translateY(10px);
+animation:fadeLine 0.8s forwards;
+color:#fff3b0;
+}
+@keyframes fadeLine{
+to{opacity:1;transform:translateY(0);}
+}
+
+/* Fireworks */
+canvas{
+position:absolute;
+top:0;
+left:0;
+}
+
+/* Watermark */
+.watermark{
+position:absolute;
+bottom:15px;
+right:15px;
+font-size:12px;
+opacity:0.8;
+color:#fff;
+}
+
+</style></head><body><!-- Background Video --><video autoplay muted loop>
+<source src="https://cdn.pixabay.com/video/2023/03/14/154449-807841996_large.mp4" type="video/mp4">
+</video><div class="overlay"></div><audio id="music" src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b2d5d.mp3"></audio>
+
+<canvas id="fireworks"></canvas>
+
+<!-- Name Input --><div class="container" id="nameStep">
+<h2>আপনার নাম লিখুন</h2>
+<input type="text" id="username" placeholder="আপনার নাম...">
+<button onclick="start()">শুরু করুন</button>
+</div><!-- Gift --><div class="container hidden" id="step0">
+<div class="gift">🎁</div>
+<h2 id="welcomeText"></h2>
+<button onclick="next(1)">সারপ্রাইজটি দেখুন</button>
+</div><!-- Step 1 --><div class="container hidden" id="step1">
+<h2>🌙 আকাশে ঈদের চাঁদ উঠেছে!</h2>
+<button onclick="next(2)">পরবর্তী</button>
+</div><!-- Step 2 --><div class="container hidden" id="step2">
+<div class="lantern">🏮</div>
+<h3 id="wishText"></h3><div id="poem" class="poem"></div><p>✨ ঈদ মোবারক ✨</p>
+<button onclick="next(3)">শেষ ধাপ</button>
+</div><!-- Final --><div class="container hidden" id="step3">
+<h1 id="finalText"></h1>
+<p>আপনার জীবনে আসুক সুখ, শান্তি ও সমৃদ্ধি</p><button onclick="download()">📸 Download</button>
+<button onclick="share()">📲 Share</button>
+
+</div><div class="watermark">✨ SofiqTech</div><script>
+let name="";
+
+function start(){
+name=document.getElementById("username").value || "আপনি";
+document.getElementById("nameStep").classList.add("hidden");
+document.getElementById("step0").classList.remove("hidden");
+document.getElementById("welcomeText").innerText=name+" এর জন্য একটি বিশেষ সারপ্রাইজ!";
+document.getElementById("music").play();
+}
+
+function next(step){
+document.querySelectorAll('.container').forEach(e=>e.classList.add('hidden'));
+document.getElementById("step"+step).classList.remove("hidden");
+
+if(step===2){
+document.getElementById("wishText").innerText=
+name+" এবং আপনার পরিবারের সবার জীবন আনন্দে ভরে উঠুক";
+
+let poemLines=[
+"🌙 "+name+" এর জীবনে আসুক নতুন আলো,",
+"✨ সুখে ভরে উঠুক আগামীর প্রতিটি ভালো,",
+"💖 হাসি থাকুক প্রতিটি ক্ষণে,",
+"🎉 ঈদ আসুক আনন্দ হয়ে আপনার জীবনে।"
+];
+
+let box=document.getElementById("poem");
+box.innerHTML="";
+
+poemLines.forEach((line,i)=>{
+let span=document.createElement("span");
+span.innerText=line;
+span.style.animationDelay=(i*0.7)+"s";
+box.appendChild(span);
+});
+}
+
+if(step===3){
+document.getElementById("finalText").innerText="🌙 শুভ ঈদ "+name+" 🌙";
+startFireworks();
+}
+}
+
+/* Share */
+function share(){
+if(navigator.share){
+navigator.share({
+title:"Eid Mubarak",
+text:"🌙 Eid Mubarak from SofiqTech!",
+url:location.href
+});
+}
+}
+
+/* Download */
+function download(){
+html2canvas(document.body).then(c=>{
+let a=document.createElement("a");
+a.download="eid.png";
+a.href=c.toDataURL();
+a.click();
+});
+}
+
+/* Fireworks */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+let particles=[];
+
+function fire(){
+for(let i=0;i<100;i++){
+particles.push({
+x:canvas.width/2,
+y:canvas.height/2,
+angle:Math.random()*2*Math.PI,
+speed:Math.random()*6,
+life:100
+});
+}
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+particles.forEach((p,i)=>{
+p.x+=Math.cos(p.angle)*p.speed;
+p.y+=Math.sin(p.angle)*p.speed;
+p.life--;
+ctx.fillStyle="gold";
+ctx.fillRect(p.x,p.y,2,2);
+if(p.life<=0)particles.splice(i,1);
+});
+requestAnimationFrame(animate);
+}
+
+function startFireworks(){
+setInterval(fire,800);
+animate();
+}
+</script><script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script></body>
+</html>
